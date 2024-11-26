@@ -1,7 +1,8 @@
 import "./App.css";
+import Memo from "./Memo";
 
 function App() {
-  return <div>Hello World</div>;
+  return <Memo></Memo>;
 }
 
 export default App;
