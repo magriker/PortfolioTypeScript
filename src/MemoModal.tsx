@@ -1,0 +1,182 @@
+/** @jsxImportSource @emotion/react */
+
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import {
+  buttonBox,
+  errorStyle,
+  formButton,
+  formConatainer,
+  modalBox,
+  modalForm,
+  textfield,
+} from "./Css";
+import { v4 as uuid } from "uuid";
+import { Box, Button, Modal, TextField } from "@mui/material";
+import shadows from "@mui/material/styles/shadows";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
+
+const MemoModal = ({
+  open,
+  handleClose,
+  editContents,
+  isNewModal,
+  memoItems,
+  setMemoItems,
+  targetItem,
+  setTargetItem,
+  targetDate,
+  deleItem,
+}): any => {
+  const schema: any = yup.object().shape({
+    title: yup.string().required("タイトルが必要です"),
+    memo: yup.string(),
+  });
+
+  const useFormmethod: any = useForm({
+    defaultValuse: {
+      ...targetItem,
+    },
+    resolver: yupResolver(schema),
+  });
+
+  return (
+    <Modal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box css={modalBox}>
+        <FormProvider {...useFormmethod}>
+          <form action="" css={modalForm}>
+            <CreatNewitem
+              targetDate={targetDate}
+              handleClose={handleClose}
+              setMemoItems={setMemoItems}
+              memoItems={memoItems}
+              editContents={editContents}
+              targetItem={targetItem}
+              setTargetItem={setTargetItem}
+              isNewModal={isNewModal}
+              deleItem={deleItem}
+            ></CreatNewitem>
+          </form>
+        </FormProvider>
+      </Box>
+    </Modal>
+  );
+};
+
+const CreatNewitem = ({
+  handleClose,
+  setMemoItems,
+  memoItems,
+  editContents,
+  targetItem,
+  setTargetItem,
+  isNewModal,
+  targetDate,
+  deleItem,
+}) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    // control,
+    formState: { errors },
+  } = useFormContext();
+
+  const onSubmit = (data) => {
+    const result = { ...data, date: targetDate, id: uuid() };
+    setMemoItems([...memoItems, result]);
+    window.localStorage.setItem("memo", JSON.stringify([...memoItems, result]));
+    console.log("out", data);
+    handleClose();
+    reset();
+  };
+
+  return (
+    <div css={formConatainer}>
+      {isNewModal ? (
+        <>
+          <p>日付：{targetDate}</p>
+          <p css={errorStyle}>{errors.title?.message}</p>
+          <TextField
+            id="outlined-basic"
+            fullWidth
+            name="title"
+            label="タイトル"
+            variant="outlined"
+            css={textfield}
+            {...register("title")}
+          />
+          <TextField
+            id="outlined-multiline-static"
+            label="メモ"
+            name="memo"
+            multiline
+            fullWidth
+            rows={8}
+            css={textfield}
+            {...register("memo")}
+          />
+          <Button
+            variant="outlined"
+            type="submit"
+            css={formButton}
+            onClick={handleSubmit(onSubmit)}
+          >
+            保存
+          </Button>
+        </>
+      ) : (
+        <>
+          <TextField
+            id="outlined-basic"
+            fullWidth
+            label="タイトル"
+            variant="outlined"
+            value={targetItem.title}
+            onChange={(e) =>
+              setTargetItem({ ...targetItem, title: e.target.value })
+            }
+            css={textfield}
+          />
+
+          <TextField
+            id="outlined-multiline-static"
+            label="メモ"
+            multiline
+            fullWidth
+            rows={8}
+            value={targetItem.memo}
+            onChange={(e) =>
+              setTargetItem({ ...targetItem, memo: e.target.value })
+            }
+            css={textfield}
+          />
+          <div css={buttonBox}>
+            <Button
+              variant="outlined"
+              css={formButton}
+              onClick={() => deleItem(targetItem)}
+            >
+              <DeleteIcon />
+              削除
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => editContents(targetItem)}
+              css={formButton}
+            >
+              変更
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default MemoModal;

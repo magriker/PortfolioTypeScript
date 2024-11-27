@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 import * as React from "react";
 import { Container } from "@mui/material";
-import { Title } from "@mui/icons-material";
 import { appTitle, blurBg, titleContainer } from "./Css";
 import Calender from "./Calender";
+import MemoModal from "./MemoModal";
 
 type ItemType = {
   title: string;
@@ -25,10 +24,10 @@ function Memo(): any {
     memo ? JSON.parse(memo) : []
   );
   const [open, setOpen] = React.useState(false);
-  const [targetItem, setTargetItem] = React.useState(defaultIte);
+  const [targetItem, setTargetItem] = React.useState(defaultItem);
   const [isNewModal, setIsNewModal] = React.useState(false);
   //   Calender
-  const [targetdate, setTargetDate] = React.useState();
+  const [targetDate, setTargetDate] = React.useState();
 
   const handleOpen = (item: any) => {
     setOpen(true);
@@ -76,6 +75,18 @@ function Memo(): any {
             handleOpen={handleOpen}
           ></Calender>
         </Container>
+        <MemoModal
+          open={open}
+          handleClose={handleClose}
+          editContents={editContents}
+          isNewModal={isNewModal}
+          memoItems={memoItems}
+          setMemoItems={setMemoItems}
+          targetItem={targetItem}
+          setTargetItem={setTargetItem}
+          targetDate={targetDate}
+          deleItem={deleItem}
+        ></MemoModal>
       </div>
     </>
   );
