@@ -15,6 +15,22 @@ import { v4 as uuid } from "uuid";
 import { Box, Button, Modal, TextField } from "@mui/material";
 import shadows from "@mui/material/styles/shadows";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import { Memo } from "./Memo";
+
+type Prop = {
+  open: boolean;
+  handleClose: () => void;
+  editContents: (targetItem: object) => void;
+  isNewModal: boolean;
+  memoItems: Memo[];
+  setMemoItems: (memoItems: Memo[]) => void;
+  targetItem: Memo;
+  setTargetItem: (targetItem: Memo) => void;
+  targetDate: string;
+  deleItem: (targetItem: Memo) => void;
+};
+
+type CreatNewItemProp = Omit<Prop, "open">;
 
 const MemoModal = ({
   open,
@@ -27,18 +43,19 @@ const MemoModal = ({
   setTargetItem,
   targetDate,
   deleItem,
-}): any => {
-  const schema: any = yup.object().shape({
+}: Prop) => {
+  const schema = yup.object().shape({
     title: yup.string().required("タイトルが必要です"),
     memo: yup.string(),
   });
 
-  const useFormmethod: any = useForm({
+  const useFormmethod = useForm({
     defaultValuse: {
       ...targetItem,
     },
     resolver: yupResolver(schema),
-  });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any);
 
   return (
     <Modal
@@ -78,7 +95,7 @@ const CreatNewitem = ({
   isNewModal,
   targetDate,
   deleItem,
-}) => {
+}: CreatNewItemProp) => {
   const {
     register,
     handleSubmit,
@@ -87,8 +104,8 @@ const CreatNewitem = ({
     formState: { errors },
   } = useFormContext();
 
-  const onSubmit = (data) => {
-    const result = { ...data, date: targetDate, id: uuid() };
+  const onSubmit = (data: Memo) => {
+    const result: Memo = { ...data, date: targetDate, id: uuid() };
     setMemoItems([...memoItems, result]);
     window.localStorage.setItem("memo", JSON.stringify([...memoItems, result]));
     console.log("out", data);
@@ -125,7 +142,7 @@ const CreatNewitem = ({
             variant="outlined"
             type="submit"
             css={formButton}
-            onClick={handleSubmit(onSubmit)}
+            onClick={handleSubmit((data) => onSubmit(data as Memo))}
           >
             保存
           </Button>

@@ -5,23 +5,24 @@ import { appTitle, blurBg, titleContainer } from "./Css";
 import Calender from "./Calender";
 import MemoModal from "./MemoModal";
 
-type ItemType = {
+export type Memo = {
+  id?: string;
   title: string;
   memo: string;
   date: string;
 };
 
-function Memo(): any {
-  const memo: string = window.localStorage.getItem("memo");
+function Memo() {
+  const memo: string = window.localStorage.getItem("memo") ?? "";
 
-  const defaultItem: ItemType = {
+  const defaultItem: Memo = {
     title: "",
     memo: "",
     date: "",
   };
 
   const [memoItems, setMemoItems] = React.useState(
-    memo ? JSON.parse(memo) : []
+    memo ? (JSON.parse(memo) as Memo[]) : []
   );
   const [open, setOpen] = React.useState(false);
   const [targetItem, setTargetItem] = React.useState(defaultItem);
@@ -29,7 +30,7 @@ function Memo(): any {
   //   Calender
   const [targetDate, setTargetDate] = React.useState();
 
-  const handleOpen = (item: any) => {
+  const handleOpen = (item: Memo) => {
     setOpen(true);
     setTargetItem(item);
   };
@@ -38,8 +39,8 @@ function Memo(): any {
     setOpen(false);
   };
 
-  const editContents = (targetItem: any) => {
-    const newlists: any = memoItems.map((item: any) =>
+  const editContents = (targetItem: Memo) => {
+    const newlists: Memo[] = memoItems.map((item: Memo) =>
       item.id === targetItem.id
         ? { ...item, title: targetItem.title, memo: targetItem.memo }
         : item
@@ -54,8 +55,10 @@ function Memo(): any {
     setOpen(true);
   };
 
-  const deleItem = (targetItem: any) => {
-    const newItems: any = memoItems.filter((item) => item.id !== targetItem.id);
+  const deleItem = (targetItem: Memo) => {
+    const newItems: Memo[] = memoItems.filter(
+      (item) => item.id !== targetItem.id
+    );
     setMemoItems(newItems);
     window.localStorage.setItem("memo", JSON.stringify([...newItems]));
     handleClose();
