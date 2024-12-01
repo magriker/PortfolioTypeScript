@@ -1,23 +1,35 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import { Memo } from "./Memo";
+
+type CalenderProp = {
+  memoItems: Memo;
+  handleCreatButtonClick: () => void;
+  setTargetDate: (targetDate: string) => void;
+  handleOpen: (targetItem: Memo) => void;
+};
 
 const Calender = ({
   memoItems,
   handleCreatButtonClick,
   setTargetDate,
   handleOpen,
-}): any => {
-  const handleDateClick = (arg: any) => {
+}: CalenderProp) => {
+  const handleDateClick = (arg: object) => {
     handleCreatButtonClick();
     setTargetDate(arg.dateStr);
     console.log(arg.dateStr);
   };
 
-  const handleEventClick = (arg: any) => {
-    const targetItem: any = memoItems.find(
-      (item: any) => item.id === arg.event.id
+  const handleEventClick = (arg: object) => {
+    console.log(arg.event);
+
+    const targetItem: Memo = memoItems.find(
+      (item: Memo) => item.id === arg.event.id
     );
+    console.log(targetItem);
+
     handleOpen(targetItem);
   };
 

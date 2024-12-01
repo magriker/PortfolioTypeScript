@@ -12,6 +12,19 @@ export type Memo = {
   date: string;
 };
 
+export type Prop = {
+  open: boolean;
+  handleClose: () => void;
+  editContents: (targetItem: object) => void;
+  isNewModal: boolean;
+  memoItems: Memo[];
+  setMemoItems: (memoItems: Memo[]) => void;
+  targetItem: Memo;
+  setTargetItem: (targetItem: Memo) => void;
+  targetDate: string;
+  deleItem: (targetItem: Memo) => void;
+};
+
 function Memo() {
   const memo: string = window.localStorage.getItem("memo") ?? "";
 
@@ -28,7 +41,7 @@ function Memo() {
   const [targetItem, setTargetItem] = React.useState(defaultItem);
   const [isNewModal, setIsNewModal] = React.useState(false);
   //   Calender
-  const [targetDate, setTargetDate] = React.useState();
+  const [targetDate, setTargetDate] = React.useState("");
 
   const handleOpen = (item: Memo) => {
     setOpen(true);
@@ -37,6 +50,7 @@ function Memo() {
 
   const handleClose = () => {
     setOpen(false);
+    setIsNewModal(false);
   };
 
   const editContents = (targetItem: Memo) => {

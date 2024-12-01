@@ -13,23 +13,9 @@ import {
 } from "./Css";
 import { v4 as uuid } from "uuid";
 import { Box, Button, Modal, TextField } from "@mui/material";
-import shadows from "@mui/material/styles/shadows";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
-import { Memo } from "./Memo";
-
-type Prop = {
-  open: boolean;
-  handleClose: () => void;
-  editContents: (targetItem: object) => void;
-  isNewModal: boolean;
-  memoItems: Memo[];
-  setMemoItems: (memoItems: Memo[]) => void;
-  targetItem: Memo;
-  setTargetItem: (targetItem: Memo) => void;
-  targetDate: string;
-  deleItem: (targetItem: Memo) => void;
-};
-
+import { Memo, Prop } from "./Memo";
+import DeleteIcon from "@mui/icons-material/Delete";
 type CreatNewItemProp = Omit<Prop, "open">;
 
 const MemoModal = ({
